@@ -1,10 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:nutricao_app/database/dbController.dart';
 
-import '../models/models.dart';
 import 'data_card.dart';
 
 final userCredential = FirebaseAuth.instance;

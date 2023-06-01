@@ -27,7 +27,7 @@ class Database {
 
   static Future<sql.Database> database() async {
     return sql.openDatabase(
-      'db_nutricao.db',
+      'adb_nutricao.db',
       version: 1,
       onCreate: (sql.Database database, int version) async {
         await createTables(database);
@@ -58,7 +58,7 @@ class Database {
 
   static Future<List<AlimentosModel>> getAlimentos() async {
 
-    final database = await Database.database();
+    final database = await Database.database();    
     final List<Map<String, dynamic>> alimentos = await database.query('alimentos');
 
     return List.generate(alimentos.length, (i) {
@@ -69,6 +69,12 @@ class Database {
            tipo: alimentos[i]['tipo']);
     });
   }
+
+  static Future<List<Map<String, dynamic>>> getLAlimentos() async {
+    final database = await Database.database();    
+    return database.query('alimentos');
+  }
+
 
   static listarAlimentos() async {
 

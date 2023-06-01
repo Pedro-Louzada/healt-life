@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:nutricao_app/models/models.dart';
+import 'package:nutricao_app/database/dbController.dart';
+//import '../database/dbController.dart';
 
-import '../database/dbController.dart';
+
+class cardItem extends StatefulWidget {
+  cardItem({super.key});
 
 
-class cardItem extends StatelessWidget {
+  @override
+  _cardItem createState() => _cardItem();
 
-  Future<List<AlimentosModel>> listaAlimentos = Database.getAlimentos();
-  List results = [];
+}
 
-  void getData() async {
-    Future<List<AlimentosModel>> listaAlimentos = Database.getAlimentos();
-    results.add(listaAlimentos);
+class _cardItem extends State<cardItem> {
+
+
+  Future<List<Map<String, dynamic>>> getAlimentos() async {
+    return Database.getLAlimentos();
+  }
+
+  @override
+  void initState()   {
+    super.initState();
   }
 
 
@@ -19,9 +30,11 @@ class cardItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: FutureBuilder(
-        future: listaAlimentos,
-        builder: (context, snapshot) {
+        future: getAlimentos(),
+        builder: (context, AsyncSnapshot<List<Map<String, dynamic>>>snapshot) {
           List data = snapshot.data ?? [];
+          //List<AlimentosModel> alimentos = data as List<AlimentosModel>;
+          debugPrint("teste");
           return ListView.builder(
             itemCount: data.length,
             itemBuilder: (context, index) { 
@@ -41,12 +54,12 @@ class cardItem extends StatelessWidget {
                 ),
               ],
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(24.0),
               child: Column(
                 children: [
                   Text(
-                    '{}',
+                    '',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   Text(
@@ -103,3 +116,6 @@ class cardItem extends StatelessWidget {
       ); */
   }
 }
+
+
+  

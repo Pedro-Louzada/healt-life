@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nutricao_app/pages/credits.dart';
 import 'package:nutricao_app/pages/login_page.dart';
-import '../components/principal_Page.dart';
+import '../components/principal_page.dart';
 import '../components/sized_circle.dart';
 
 class ProfileLogout extends StatefulWidget {

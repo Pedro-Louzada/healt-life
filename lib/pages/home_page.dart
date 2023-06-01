@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nutricao_app/components/principal_Page.dart';
+import 'package:nutricao_app/components/principal_page.dart';
 import 'package:nutricao_app/pages/profile_logout.dart';
 import 'search_page.dart';
 import 'add_foods.dart';
