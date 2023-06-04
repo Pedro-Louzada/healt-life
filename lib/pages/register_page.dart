@@ -2,11 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../database/dbController.dart';
 
 class CadastroPage extends StatefulWidget {
   const CadastroPage({super.key});
-
-  
 
   @override
   State<CadastroPage> createState() => _CadastroPageState();
@@ -17,12 +16,16 @@ class _CadastroPageState extends State<CadastroPage> {
   TextEditingController nomeController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController fotoController = TextEditingController();
+  TextEditingController dtNascimentoController = TextEditingController();
 
   @override
   void initState() {
     nomeController = TextEditingController();
     emailController = TextEditingController();
     passwordController = TextEditingController();
+    fotoController = TextEditingController();
+    dtNascimentoController = TextEditingController();
     super.initState();
   }
 
@@ -30,6 +33,8 @@ class _CadastroPageState extends State<CadastroPage> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    fotoController.dispose();
+    dtNascimentoController.dispose();
     super.dispose();
   }
 
@@ -133,11 +138,51 @@ class _CadastroPageState extends State<CadastroPage> {
                 SizedBox(
                   height: 10,
                 ),
+                TextFormField(
+                  controller: fotoController,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  decoration: InputDecoration(
+                    labelText: 'Foto',
+                    labelStyle: TextStyle(color: Colors.white),
+                    hintText: 'URL da foto',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0)),
+                    hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
+                    prefixIcon: Icon(Icons.photo),
+                    prefixIconColor: Color.fromRGBO(255, 209, 143, 100),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  controller: dtNascimentoController,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  decoration: InputDecoration(
+                    labelText: 'Data de Nascimento',
+                    labelStyle: TextStyle(color: Colors.white),
+                    hintText: 'xx/xx/xxxx',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20.0)),
+                    hintStyle: TextStyle(color: Colors.white, fontSize: 15),
+                    prefixIcon: Icon(Icons.date_range),
+                    prefixIconColor: Color.fromRGBO(255, 209, 143, 100),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 ElevatedButton(
                   onPressed: () async {
                     final nome = nomeController.text;
                     final email = emailController.text;
                     final password = passwordController.text;
+                    final foto = fotoController.text;
+                    final dtNascimento = dtNascimentoController.text;
 
                     try {
                       final userCredential = await FirebaseAuth.instance
@@ -148,14 +193,7 @@ class _CadastroPageState extends State<CadastroPage> {
                         const SnackBar(content: Text('Usuário registrado!')),
                       );
                       Navigator.pop(context);
-                      _firestore.collection('usuario').add({
-                        'nomeUsuario': nome,
-                        'email': email,
-                      }).then((DocumentReference doc) {
-                        print('Usuario salvo com ID: ${doc.id}');
-                      }).catchError((error) {
-                        print('Erro ao salvar usuário: $error');
-                      });
+                      Database.insertUsuario(nome, foto, dtNascimento);
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'weak-password') {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -196,138 +234,3 @@ class _CadastroPageState extends State<CadastroPage> {
     );
   }
 }
-
-
-// 
-
-
-// ListView(
-//             children: [
-//               SizedBox(
-//                 width: 150,
-//                 height: 150,
-//                 child: Image.asset('assets/Logo-Nutri.png'),
-//               ),
-//               Padding(
-//                 padding: EdgeInsets.all(20),
-//                 child: Center(
-//                   child: Text(
-//                     'Criar sua conta',
-//                     style: TextStyle(
-//                         fontSize: 28,
-//                         color: Colors.white,
-//                         fontFamily: 'OpenSans'),
-//                   ),
-//                 ),
-//               ),
-//               TextFormField(
-//                 style: const TextStyle(color: Colors.white, fontSize: 18),
-//                 controller: nomeController,
-//                 decoration: InputDecoration(
-//                   labelText: 'Nome',
-//                   labelStyle: TextStyle(color: Colors.white),
-//                   hintText: 'Digite seu nome completo',
-//                   border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(20.0)),
-//                   hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-//                   prefixIcon: Icon(Icons.person),
-//                   prefixIconColor: Color.fromARGB(255, 209, 143, 100),
-//                 ),
-//               ),
-//               SizedBox(
-//                 height: 10,
-//               ),
-//               TextFormField(
-//                 controller: emailController,
-//                 enableSuggestions: false,
-//                 autocorrect: false,
-//                 keyboardType: TextInputType.emailAddress,
-//                 style: const TextStyle(color: Colors.white, fontSize: 18),
-//                 decoration: InputDecoration(
-//                   labelText: 'Email',
-//                   labelStyle: TextStyle(color: Colors.white),
-//                   hintText: 'Digite seu email',
-//                   border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(20.0)),
-//                   hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-//                   prefixIcon: Icon(Icons.person),
-//                   prefixIconColor: Color.fromARGB(255, 209, 143, 100),
-//                 ),
-//               ),
-//               SizedBox(
-//                 height: 10,
-//               ),
-//               TextFormField(
-//                 controller: passwordController,
-//                 obscureText: true,
-//                 enableSuggestions: false,
-//                 autocorrect: false,
-//                 style: const TextStyle(color: Colors.white, fontSize: 18),
-//                 decoration: InputDecoration(
-//                   labelText: 'Senha',
-//                   labelStyle: TextStyle(color: Colors.white),
-//                   hintText: 'Digite sua senha',
-//                   border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(20.0)),
-//                   hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-//                   prefixIcon: Icon(Icons.person),
-//                   prefixIconColor: Color.fromARGB(255, 209, 143, 100),
-//                 ),
-//               ),
-//               SizedBox(
-//                 height: 10,
-//               ),
-//               ElevatedButton(
-//                 onPressed: () async {
-//                   final nome = nomeController.text;
-//                   final email = emailController.text;
-//                   final password = passwordController.text;
-
-//                   try {
-//                     final userCredential = await FirebaseAuth.instance
-//                         .createUserWithEmailAndPassword(
-//                             email: email, password: password);
-//                     print(userCredential);
-//                     ScaffoldMessenger.of(context).showSnackBar(
-//                       const SnackBar(content: Text('Usuário registrado!')),
-//                     );
-//                     _firestore.collection('usuario').add({
-//                       'nomeUsuario': nome,
-//                       'email': email,
-//                     }).then((DocumentReference doc) {
-//                       print('Usuario salvo com ID: ${doc.id}');
-//                     }).catchError((error) {
-//                       print('Erro ao salvar usuário: $error');
-//                     });
-//                   } on FirebaseAuthException catch (e) {
-//                     if (e.code == 'weak-password') {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         const SnackBar(content: Text('Senha fraca')),
-//                       );
-//                     }
-//                     if (e.code == 'email-already-in-use') {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         const SnackBar(content: Text('Email já cadastrado')),
-//                       );
-//                     }
-//                     if (e.code == 'invalid-email') {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         const SnackBar(content: Text('email invalido')),
-//                       );
-//                     }
-//                   }
-//                 },
-//                 style: ButtonStyle(
-//                   backgroundColor: MaterialStateColor.resolveWith((states) {
-//                     return Color.fromRGBO(255, 209, 143, 100);
-//                   }),
-//                   padding: const MaterialStatePropertyAll(EdgeInsets.all(20)),
-//                 ),
-//                 child: const Text('Cadastrar',
-//                     style: TextStyle(
-//                         color: Colors.white,
-//                         fontSize: 16,
-//                         fontFamily: 'OpenSans')),
-//               ),
-//             ],
-//           ),

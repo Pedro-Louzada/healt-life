@@ -14,9 +14,7 @@ void main() {
   
   WidgetsFlutterBinding.ensureInitialized();
   Firebase.initializeApp();
-  //Database.database();
-  //debugPrint(listaAlimentos.toString());
-  //Database.getCardapio();
+  Database.database();
 
   runApp(
     const MaterialApp(

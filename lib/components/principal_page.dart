@@ -9,15 +9,13 @@ final userCredential = FirebaseAuth.instance;
 class PrincipalPage extends StatefulWidget {
   const PrincipalPage({super.key});
 
-   @override
+  @override
   _PrincipalPage createState() => _PrincipalPage();
-    
 }
 
 class _PrincipalPage extends State<PrincipalPage> {
-  
   @override
-  void initState()   {
+  void initState() {
     super.initState();
   }
 
@@ -114,7 +112,7 @@ class _PrincipalPage extends State<PrincipalPage> {
                         alignment: Alignment.topLeft,
                         padding: EdgeInsets.only(top: 35, left: 35),
                         child: const Text(
-                          'Populares',
+                          'Alimentos Populares',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontFamily: 'OpenSans',
@@ -122,31 +120,15 @@ class _PrincipalPage extends State<PrincipalPage> {
                               color: Colors.black),
                         ),
                       ),
-                      Container(
-                          padding: EdgeInsets.only(top: 20, left: 25),
-                          child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                height: 305,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: [
-
-                                    cardItem()
-                                       /* cardItem(
-                                        'https://i.pinimg.com/564x/73/35/34/73353454e5844ea81ce617517931f1c4.jpg'),
-                                    SizedBox(width: 12),
-                                    cardItem(
-                                        'https://i.pinimg.com/564x/7f/ab/25/7fab256cb01b1c9a23c5a18c0c0d205c.jpg'),
-                                    SizedBox(width: 12),
-                                    cardItem(
-                                        'https://i.pinimg.com/564x/31/64/3a/31643ade701bc5b8c8246c3f8410961b.jpg'),
-                                    SizedBox(width: 12),
-                                    cardItem(
-                                        'https://i.pinimg.com/564x/0c/d7/73/0cd773d7ba87cc5ae268c21c1635500c.jpg')  */
-                                  ],
-                                ),
-                              )))
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxHeight: 335),
+                          child: cardItem(),
+                        ),
+                      )
                     ],
                   )),
             ),
@@ -156,11 +138,10 @@ class _PrincipalPage extends State<PrincipalPage> {
     );
   }
 
-
-final List<String> imgList = [
-  'https://i.pinimg.com/564x/2b/4a/ad/2b4aadfae1577b27da41adc8c5d76e1e.jpg',
-  'https://i.pinimg.com/564x/56/cb/61/56cb61b60c3a9c9bf7aba8966afa04fe.jpg',
-  'https://i.pinimg.com/564x/14/73/0d/14730dee66f62a4daef72268c47ee629.jpg',
-  'https://i.pinimg.com/564x/10/7a/d2/107ad2c677a14e62f167f9a82269bad6.jpg'
-];
+  final List<String> imgList = [
+    'https://i.pinimg.com/564x/2b/4a/ad/2b4aadfae1577b27da41adc8c5d76e1e.jpg',
+    'https://i.pinimg.com/564x/56/cb/61/56cb61b60c3a9c9bf7aba8966afa04fe.jpg',
+    'https://i.pinimg.com/564x/14/73/0d/14730dee66f62a4daef72268c47ee629.jpg',
+    'https://i.pinimg.com/564x/10/7a/d2/107ad2c677a14e62f167f9a82269bad6.jpg'
+  ];
 }

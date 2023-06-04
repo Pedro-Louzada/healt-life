@@ -1,6 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:nutricao_app/components/principal_Page.dart';
+import 'package:nutricao_app/database/dbController.dart';
+import 'package:form_builder_image_picker/form_builder_image_picker.dart';
+
+import 'add_menu.dart';
+
+List<String> tipo = ['Bebida', 'Proteína', 'Carboidrato', 'Fruta', 'Grão'];
+
+List<String> categoria = ['Café', 'Almoço', 'Janta'];
 
 class AddFoods extends StatefulWidget {
   const AddFoods({super.key});
@@ -10,158 +19,175 @@ class AddFoods extends StatefulWidget {
 }
 
 class _AddFoodsState extends State<AddFoods> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController nomeController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController fotoController = TextEditingController();
+  TextEditingController categoriaController = TextEditingController();
+  TextEditingController tipoController = TextEditingController();
 
   @override
   void initState() {
     nomeController = TextEditingController();
-    emailController = TextEditingController();
-    passwordController = TextEditingController();
+    fotoController = TextEditingController();
+    categoriaController = TextEditingController();
+    tipoController = TextEditingController();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          color: Color.fromRGBO(255, 209, 143, 100),
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       backgroundColor: Colors.white,
       body: Padding(
           padding: const EdgeInsets.only(left: 20, right: 20, top: 0),
-          child: Container(
-              child: SingleChildScrollView(
+          child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Center(
-                  child: const Text(
-                    'Crie seu cardápio de refeições',
+                const Center(
+                  child: Text(
+                    'Adicione o alimento',
                     style: TextStyle(
                         fontFamily: 'OpenSans',
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
-                        color: Color.fromRGBO(255, 209, 143, 100)),
+                        color: Color.fromRGBO(250, 168, 53, 0.612)),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 25,
                 ),
                 TextFormField(
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 85, 84, 84), fontSize: 16),
                   controller: nomeController,
                   decoration: InputDecoration(
                     labelText: 'Nome',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Colors.black),
                     hintText: 'Digite seu nome completo',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0)),
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
+                    hintStyle: const TextStyle(
+                        color: Color.fromARGB(255, 128, 128, 128),
+                        fontSize: 15),
                     prefixIcon: Icon(Icons.person),
                     prefixIconColor: Color.fromRGBO(255, 209, 143, 100),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
+                  height: 10,
+                ),
+                const SizedBox(
                   height: 10,
                 ),
                 TextFormField(
-                  controller: emailController,
+                  controller: fotoController,
                   enableSuggestions: false,
                   autocorrect: false,
-                  keyboardType: TextInputType.emailAddress,
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                  style: const TextStyle(color: Colors.black, fontSize: 16),
                   decoration: InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: TextStyle(color: Colors.white),
-                    hintText: 'Digite seu email',
+                    labelText: 'Foto',
+                    labelStyle: TextStyle(color: Colors.black),
+                    hintText: 'URL da foto',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20.0)),
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-                    prefixIcon: Icon(Icons.email),
+                    hintStyle: TextStyle(
+                        color: Color.fromARGB(255, 128, 128, 128),
+                        fontSize: 15),
+                    prefixIcon: Icon(Icons.photo),
                     prefixIconColor: Color.fromRGBO(255, 209, 143, 100),
                   ),
                 ),
-                SizedBox(
-                  height: 10,
+                const SizedBox(
+                  height: 15,
                 ),
-                TextFormField(
-                  controller: passwordController,
-                  obscureText: true,
-                  enableSuggestions: false,
-                  autocorrect: false,
-                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                DropdownButtonFormField(
+                  hint: Text('Escolha o tipo do alimento'),
                   decoration: InputDecoration(
-                    labelText: 'Senha',
-                    labelStyle: TextStyle(color: Colors.white),
-                    hintText: 'Digite sua senha',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20.0)),
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-                    prefixIcon: Icon(Icons.lock),
-                    prefixIconColor: Color.fromRGBO(255, 209, 143, 100),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20.0))),
+                  items: tipo.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    Text(value!);
+                    tipoController.text = value;
+                  },
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                DropdownButtonFormField(
+                  hint: const Text('Escolha a categoria do alimento'),
+                  decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.black),
+                          borderRadius: BorderRadius.circular(20.0))),
+                  items:
+                      categoria.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    Text(value!);
+                    categoriaController.text = value;
+                  },
+                ),
+                const SizedBox(
+                  height: 150,
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(
+                      Color.fromRGBO(255, 209, 143, 100)
+                    )
                   ),
+                    onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AddMenu(),
+                        )),
+                    child: Text('Adicionar novo cardápio', style: TextStyle(fontSize: 16),)),
+                    const SizedBox(
+                  height: 5,
                 ),
-                SizedBox(
-                  height: 10,
-                ),
+                
                 ElevatedButton(
                   onPressed: () async {
                     final nome = nomeController.text;
-                    final email = emailController.text;
-                    final password = passwordController.text;
+                    final foto = fotoController.text;
+                    final categoria = categoriaController.text;
+                    final tipo = tipoController.text;
 
-                    try {
-                      final userCredential = await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: email, password: password);
-                      print(userCredential);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Usuário registrado!')),
-                      );
-                      _firestore.collection('usuario').add({
-                        'nomeUsuario': nome,
-                        'email': email,
-                      }).then((DocumentReference doc) {
-                        print('Usuario salvo com ID: ${doc.id}');
-                      }).catchError((error) {
-                        print('Erro ao salvar usuário: $error');
-                      });
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'weak-password') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Senha fraca')),
-                        );
-                      }
-                      if (e.code == 'email-already-in-use') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Email já cadastrado')),
-                        );
-                      }
-                      if (e.code == 'invalid-email') {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('email invalido')),
-                        );
-                      }
-                    }
+                    Database.insertAlimentos(nome, foto, categoria, tipo);
+
+                    setState(() {
+                      nomeController = TextEditingController();
+                      fotoController = TextEditingController();
+                      categoriaController = TextEditingController();
+                      tipoController = TextEditingController();
+                    });
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Alimento criado com sucesso!')),
+                    );
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateColor.resolveWith((states) {
@@ -182,142 +208,7 @@ class _AddFoodsState extends State<AddFoods> {
                 ),
               ],
             ),
-          ))),
+          )),
     );
   }
 }
-
-
-// 
-
-
-// ListView(
-//             children: [
-//               SizedBox(
-//                 width: 150,
-//                 height: 150,
-//                 child: Image.asset('assets/Logo-Nutri.png'),
-//               ),
-//               Padding(
-//                 padding: EdgeInsets.all(20),
-//                 child: Center(
-//                   child: Text(
-//                     'Criar sua conta',
-//                     style: TextStyle(
-//                         fontSize: 28,
-//                         color: Colors.white,
-//                         fontFamily: 'OpenSans'),
-//                   ),
-//                 ),
-//               ),
-//               TextFormField(
-//                 style: const TextStyle(color: Colors.white, fontSize: 18),
-//                 controller: nomeController,
-//                 decoration: InputDecoration(
-//                   labelText: 'Nome',
-//                   labelStyle: TextStyle(color: Colors.white),
-//                   hintText: 'Digite seu nome completo',
-//                   border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(20.0)),
-//                   hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-//                   prefixIcon: Icon(Icons.person),
-//                   prefixIconColor: Color.fromARGB(255, 209, 143, 100),
-//                 ),
-//               ),
-//               SizedBox(
-//                 height: 10,
-//               ),
-//               TextFormField(
-//                 controller: emailController,
-//                 enableSuggestions: false,
-//                 autocorrect: false,
-//                 keyboardType: TextInputType.emailAddress,
-//                 style: const TextStyle(color: Colors.white, fontSize: 18),
-//                 decoration: InputDecoration(
-//                   labelText: 'Email',
-//                   labelStyle: TextStyle(color: Colors.white),
-//                   hintText: 'Digite seu email',
-//                   border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(20.0)),
-//                   hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-//                   prefixIcon: Icon(Icons.person),
-//                   prefixIconColor: Color.fromARGB(255, 209, 143, 100),
-//                 ),
-//               ),
-//               SizedBox(
-//                 height: 10,
-//               ),
-//               TextFormField(
-//                 controller: passwordController,
-//                 obscureText: true,
-//                 enableSuggestions: false,
-//                 autocorrect: false,
-//                 style: const TextStyle(color: Colors.white, fontSize: 18),
-//                 decoration: InputDecoration(
-//                   labelText: 'Senha',
-//                   labelStyle: TextStyle(color: Colors.white),
-//                   hintText: 'Digite sua senha',
-//                   border: OutlineInputBorder(
-//                       borderRadius: BorderRadius.circular(20.0)),
-//                   hintStyle: TextStyle(color: Colors.grey, fontSize: 15),
-//                   prefixIcon: Icon(Icons.person),
-//                   prefixIconColor: Color.fromARGB(255, 209, 143, 100),
-//                 ),
-//               ),
-//               SizedBox(
-//                 height: 10,
-//               ),
-//               ElevatedButton(
-//                 onPressed: () async {
-//                   final nome = nomeController.text;
-//                   final email = emailController.text;
-//                   final password = passwordController.text;
-
-//                   try {
-//                     final userCredential = await FirebaseAuth.instance
-//                         .createUserWithEmailAndPassword(
-//                             email: email, password: password);
-//                     print(userCredential);
-//                     ScaffoldMessenger.of(context).showSnackBar(
-//                       const SnackBar(content: Text('Usuário registrado!')),
-//                     );
-//                     _firestore.collection('usuario').add({
-//                       'nomeUsuario': nome,
-//                       'email': email,
-//                     }).then((DocumentReference doc) {
-//                       print('Usuario salvo com ID: ${doc.id}');
-//                     }).catchError((error) {
-//                       print('Erro ao salvar usuário: $error');
-//                     });
-//                   } on FirebaseAuthException catch (e) {
-//                     if (e.code == 'weak-password') {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         const SnackBar(content: Text('Senha fraca')),
-//                       );
-//                     }
-//                     if (e.code == 'email-already-in-use') {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         const SnackBar(content: Text('Email já cadastrado')),
-//                       );
-//                     }
-//                     if (e.code == 'invalid-email') {
-//                       ScaffoldMessenger.of(context).showSnackBar(
-//                         const SnackBar(content: Text('email invalido')),
-//                       );
-//                     }
-//                   }
-//                 },
-//                 style: ButtonStyle(
-//                   backgroundColor: MaterialStateColor.resolveWith((states) {
-//                     return Color.fromRGBO(255, 209, 143, 100);
-//                   }),
-//                   padding: const MaterialStatePropertyAll(EdgeInsets.all(20)),
-//                 ),
-//                 child: const Text('Cadastrar',
-//                     style: TextStyle(
-//                         color: Colors.white,
-//                         fontSize: 16,
-//                         fontFamily: 'OpenSans')),
-//               ),
-//             ],
-//           ),
