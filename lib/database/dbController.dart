@@ -78,6 +78,11 @@ class Database {
     return database.query('alimentos');
   }
 
+  static Future<List<Map<String, dynamic>>> getAlimentosByCategory(String categoria) async {
+    final database = await Database.database();
+    return database.rawQuery('select * from alimentos where categoria = "$categoria"');
+  }
+
   static Future<List<Map<String, dynamic>>> getCardapio() async {
     final database = await Database.database();    
     return database.query('cardapio');
@@ -95,6 +100,11 @@ class Database {
 
   static Future<List<Map<String, dynamic>>> getUsuarioById(int id) async {
     final database = await Database.database();    
-    return database.rawQuery('SELECT * FROM usuario where id = $id');
+    return database.rawQuery('SELECT * FROM alimentos where id = $id');
+  }
+
+  static Future<List<Map<String, dynamic>>> getUsuarioByLike(String search) async {
+    final database = await Database.database();    
+    return database.rawQuery('SELECT * FROM alimentos where nome like "%$search%" ');
   }
 }

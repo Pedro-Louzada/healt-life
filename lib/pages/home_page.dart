@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nutricao_app/components/principal_page.dart';
+import 'package:nutricao_app/pages/principal_page.dart';
 import 'package:nutricao_app/pages/profile_logout.dart';
 import 'search_page.dart';
 import 'add_foods.dart';
@@ -73,36 +73,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-//       body: Column(
-//         crossAxisAlignment: CrossAxisAlignment.stretch,
-//         children: [
-//           Image.asset('assets/Banner.png', fit: BoxFit.fitWidth),
-//         ],
-//       ),
-//       bottomNavigationBar: BottomNavigationBar(
-//         type: BottomNavigationBarType.fixed,
-//         backgroundColor: Colors.transparent,
-//         elevation: 0,
-//         currentIndex: 0,
-//         items: [
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.home, size: 30),
-//             label: '',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.search, size: 30),
-//             label: '',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.add, size: 30),
-//             label: '',
-//           ),
-//            BottomNavigationBarItem(
-//             icon: Icon(Icons.person_2, size: 30),
-//             label: '',
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

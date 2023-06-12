@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'data_card.dart';
+import '../components/data_card.dart';
 
 final userCredential = FirebaseAuth.instance;
 
@@ -24,7 +24,7 @@ class _PrincipalPage extends State<PrincipalPage> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
-          children: <Widget>[
+          children: [
             Container(
                 height: 250,
                 decoration: const BoxDecoration(
@@ -59,7 +59,7 @@ class _PrincipalPage extends State<PrincipalPage> {
                 )),
             Container(
               padding: EdgeInsets.only(top: 130),
-              height: MediaQuery.of(context).size.height * 1.2,
+              height: MediaQuery.of(context).size.height * 2.05,
               width: double.infinity,
               color: Colors.transparent,
               child: Container(
@@ -112,7 +112,7 @@ class _PrincipalPage extends State<PrincipalPage> {
                         alignment: Alignment.topLeft,
                         padding: EdgeInsets.only(top: 35, left: 35),
                         child: const Text(
-                          'Alimentos Populares',
+                          'Alimentos indicado por categoria',
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontFamily: 'OpenSans',
@@ -123,10 +123,11 @@ class _PrincipalPage extends State<PrincipalPage> {
                       SizedBox(
                         height: 15,
                       ),
-                      Center(
+                      Expanded(
+                        
                         child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxHeight: 335),
-                          child: cardItem(),
+                          constraints: const BoxConstraints(maxHeight: 1000),
+                          child: cardItem()                           
                         ),
                       )
                     ],

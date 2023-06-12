@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:nutricao_app/components/principal_Page.dart';
+import 'package:nutricao_app/pages/principal_Page.dart';
 import 'package:nutricao_app/database/dbController.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 

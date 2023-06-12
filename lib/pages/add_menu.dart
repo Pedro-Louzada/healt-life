@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:nutricao_app/components/principal_Page.dart';
+import 'package:nutricao_app/pages/principal_Page.dart';
 import 'package:nutricao_app/database/dbController.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:nutricao_app/database/dbController.dart';
@@ -9,6 +9,8 @@ import 'package:nutricao_app/database/dbController.dart';
 List<String> tipo = ['Bebida', 'Proteína', 'Carboidrato', 'Fruta', 'Grão'];
 
 List<String> categoria = ['Café', 'Almoço', 'Janta'];
+
+List<Object> selections = [];
 
 class AddMenu extends StatefulWidget {
   const AddMenu({super.key});
@@ -23,19 +25,19 @@ class _AddMenuState extends State<AddMenu> {
     return Database.getUsuarios();
   }
 
-  TextEditingController nomeController = TextEditingController();
-  TextEditingController fotoController = TextEditingController();
-  TextEditingController categoriaController = TextEditingController();
-  TextEditingController tipoController = TextEditingController();
+  Future<List<Map<String, dynamic>>> getAlimentosByCategory(
+      String categoria) async {
+    Database.database();
+    return Database.getAlimentosByCategory(categoria);
+  }
+
   String chooseUser = '';
+  String sqlCategory = '';
 
   @override
   void initState() {
-    nomeController = TextEditingController();
-    fotoController = TextEditingController();
-    categoriaController = TextEditingController();
-    tipoController = TextEditingController();
     getUsuarios();
+
     super.initState();
   }
 
@@ -73,46 +75,131 @@ class _AddMenuState extends State<AddMenu> {
                 const SizedBox(
                   height: 25,
                 ),
-
-                DropdownButtonHideUnderline(child: FutureBuilder(
-                  future: getUsuarios(),
-                  builder: (context, snapshot) {
-                    List data = snapshot.data ?? [];
-                    return Container(
-                      child: DropdownButton(hint: Text('Aponte o usuário'),items: snapshot.data?.map<DropdownMenuItem<String>>((value) {
+                DropdownButtonHideUnderline(
+                  child: FutureBuilder(
+                    future: getUsuarios(),
+                    builder: (context, snapshot) {
+                      List data = snapshot.data ?? [];
+                      return Container(
+                        child: DropdownButton(
+                          hint: Text('Aponte o usuário'),
+                          items: snapshot.data
+                              ?.map<DropdownMenuItem<String>>((value) {
                             return DropdownMenuItem<String>(
                               value: value['nome'],
                               child: Text(value['nome']),
                             );
-                          }).toList(), onChanged: (value) {
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {});
                             chooseUser = value!;
-                          },),
-                    );
-                  },
-                ),),
-                const SizedBox(
-                  height: 25,
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
-                
+                const SizedBox(
+                  height: 10,
+                ),
+                DropdownButton(
+                  hint: const Text('Filtre a categoria'),
+                  items: categoria
+                      .map<DropdownMenuItem<String>>((String categoria) {
+                    return DropdownMenuItem<String>(
+                      value: categoria,
+                      child: Text(categoria),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    sqlCategory = value!;
+                    setState(() {});
+                  },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(chooseUser, style: TextStyle(fontSize: 18)),
+                SizedBox(
+                  height: 20,
+                ),
+                Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxHeight: 335),
+                    child: FutureBuilder(
+                        future: getAlimentosByCategory(sqlCategory),
+                        builder: ((context, snapshot) {
+                          List data = snapshot.data ?? [];
+                          return ListView.builder(
+                            itemCount: data.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Card(
+                                  elevation: 5,
+                                  margin: EdgeInsets.all(10),
+                                  semanticContainer: true,
+                                  clipBehavior: Clip.antiAlias,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Stack(
+                                        children: [
+                                          Ink.image(
+                                            image: NetworkImage(
+                                                data[index]['foto']),
+                                            height: 150,
+                                            width: 150,
+                                            fit: BoxFit.cover,
+                                          )
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(24.0),
+                                        child: Column(
+                                          children: [
+                                            Text(data[index]['nome'],
+                                                style: const TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text(data[index]['categoria'],
+                                                style: const TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            SizedBox(
+                                              height: 20,
+                                            ),
+                                            Radio(
+                                                value: data[index],
+                                                groupValue: selections,
+                                                onChanged: (value) {
+                                                  setState(() {});
+                                                }),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ));
+                            },
+                          );
+                        })),
+                  ),
+                ),
+                SizedBox(
+                  height: 50,
+                ),
                 ElevatedButton(
                   onPressed: () async {
-                    final nome = nomeController.text;
-                    final foto = fotoController.text;
-                    final categoria = categoriaController.text;
-                    final tipo = tipoController.text;
+                    //Database.insertCardapio();
 
-                    Database.insertAlimentos(nome, foto, categoria, tipo);
-
-                    setState(() {
-                      nomeController = TextEditingController();
-                      fotoController = TextEditingController();
-                      categoriaController = TextEditingController();
-                      tipoController = TextEditingController();
-                    });
+                    setState(() {});
 
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text('Alimento criado com sucesso!')),
+                          content: Text('Cardapio criado com sucesso!')),
                     );
                   },
                   style: ButtonStyle(
