@@ -74,7 +74,7 @@ class _AddFoodsState extends State<AddFoods> {
                     hintStyle: const TextStyle(
                         color: Color.fromARGB(255, 128, 128, 128),
                         fontSize: 15),
-                    prefixIcon: Icon(Icons.person),
+                    prefixIcon: Icon(Icons.food_bank),
                     prefixIconColor: Color.fromRGBO(255, 209, 143, 100),
                   ),
                 ),

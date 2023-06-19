@@ -21,6 +21,8 @@ class Database {
       await database.execute("""CREATE TABLE  cardapio (
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         usu_id INTEGER,
+        nome TEXT,
+        alimento TEXT,
         opcoes TEXT,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
@@ -57,10 +59,10 @@ class Database {
     return id;
   }
 
-  static Future<int> insertCardapio(int usu_id, String opcoes) async {
+  static Future<int> insertCardapio(int usuId, String nome, String alimento, String opcoes) async {
     final database = await Database.database();
-    final data = {'usu_id': usu_id, 'opcoes': opcoes};
-    final id = await database.insert('alimentos', data,
+    final data = {'usu_id': usuId, 'nome': nome, 'alimento': alimento, 'opcoes': opcoes};
+    final id = await database.insert('cardapio', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
     return id;
   }
@@ -103,8 +105,19 @@ class Database {
     return database.rawQuery('SELECT * FROM alimentos where id = $id');
   }
 
-  static Future<List<Map<String, dynamic>>> getUsuarioByLike(String search) async {
-    final database = await Database.database();    
-    return database.rawQuery('SELECT * FROM alimentos where nome like "%$search%" ');
+  static Future<List<Map<String, dynamic>>> getByLike(String search, String chooseCategory) async {
+    final database = await Database.database();  
+ 
+    if(chooseCategory == 'Alimentos') return database.query('alimentos', where: 'nome LIKE ?', whereArgs: ['%$search%']);
+    else if(chooseCategory == 'Cardápios') return database.query('cardapio', where: 'nome LIKE ?', whereArgs: ['%$search%']);
+    else if(chooseCategory == 'Usuários') return database.query('usuario', where: 'nome LIKE ?', whereArgs: ['%$search%']);
+    return database.query('table');
+  }
+
+  static delete() async {
+    final database = await Database.database();  
+
+    database.rawDelete('DELETE FROM cardapio');
+
   }
 }

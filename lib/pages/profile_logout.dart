@@ -28,6 +28,7 @@ class _ProfileLogoutState extends State<ProfileLogout> {
               color: Colors.white,
             ),
           ),
+          
           Center(
             child: Padding(
               padding: const EdgeInsets.all(60),

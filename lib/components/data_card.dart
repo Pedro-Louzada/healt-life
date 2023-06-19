@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutricao_app/pages/principal_Page.dart';
 import 'package:nutricao_app/database/dbController.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../models/models.dart';
 
@@ -54,7 +55,7 @@ class _cardItem extends State<cardItem> {
                       future: getAlimentosByCategory('Café'),
                       builder: ((context, snapshot) {
                         List data = snapshot.data ?? [];
-                        if (snapshot.hasData && snapshot.data == null) {
+                        if (data.isEmpty) {
                           return SizedBox(
                             height: 10,
                           );
@@ -135,7 +136,7 @@ class _cardItem extends State<cardItem> {
                       future: getAlimentosByCategory('Almoço'),
                       builder: ((context, snapshot) {
                         List data = snapshot.data ?? [];
-                        if (snapshot.hasData && snapshot.data == null) {
+                        if (data.isEmpty) {
                           return SizedBox(
                             height: 10,
                           );
@@ -216,7 +217,7 @@ class _cardItem extends State<cardItem> {
                       future: getAlimentosByCategory('Janta'),
                       builder: ((context, snapshot) {
                         List data = snapshot.data ?? [];
-                        if (snapshot.hasData && snapshot.data == null) {
+                        if (data.isEmpty) {
                           return SizedBox(
                             height: 10,
                           );

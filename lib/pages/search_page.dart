@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import '../database/dbController.dart';
 
 class Search extends StatefulWidget {
@@ -19,9 +19,9 @@ class _Search extends State<Search> {
   List<String> category = ['Usuários', 'Alimentos', 'Cardápios'];
   String chooseCategory = '';
 
-  Future<List<Map<String, dynamic>>> getUsuarioByLike(search) async {
+  Future<List<Map<String, dynamic>>> getByLike(search, chooseCategory) async {
     Database.database();
-    return Database.getUsuarioByLike(search);
+    return Database.getByLike(search, chooseCategory);
   }
 
   @override
@@ -31,7 +31,7 @@ class _Search extends State<Search> {
             child: Stack(
       children: [
         Container(
-            height: 250,
+            height: MediaQuery.of(context).size.height * 2,
             alignment: Alignment.topLeft,
             padding: const EdgeInsets.only(top: 100, left: 15),
             child: Padding(
@@ -41,7 +41,8 @@ class _Search extends State<Search> {
                 children: [
                   TextField(
                       onChanged: (value) {
-                        search.text = value;
+                        getByLike(search.text, chooseCategory);
+                        setState(() {});
                       },
                       controller: search,
                       decoration: InputDecoration(
@@ -63,28 +64,43 @@ class _Search extends State<Search> {
                         );
                       }).toList(),
                       onChanged: (value) {
-                        chooseCategory = value!;
-                        setState(() {});
+                        setState(() {
+                          chooseCategory = value!;
+                        });
                       },
                     ),
                   ),
-                  Expanded(
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 1,
                     child: FutureBuilder(
-                      future: getUsuarioByLike(search.text),
+                      future: getByLike(search.text, chooseCategory),
                       builder: ((context, snapshot) {
                         List data = snapshot.data ?? [];
-                        if (snapshot.hasData && snapshot.data == null) {
-                          return SizedBox(
-                            height: 10,
-                          );
-                        }
+                        if (data.isEmpty) return SizedBox();
                         return ListView.builder(
                           itemCount: data.length,
-                          scrollDirection: Axis.horizontal,
                           itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                              title: Text(data[index]['nome']),
-                            );
+                            if (chooseCategory == 'Usuários') {
+                              return ListTile(
+                                title: Text(data[index]['nome']),
+                                titleTextStyle: TextStyle(
+                                    fontSize: 18, color: Colors.black),
+                              );
+                            } else if (chooseCategory == 'Cardápios') {
+                              return ListTile(
+                                title: Text(data[index]['nome']),
+                                subtitle: Text(data[index]['alimento'] + '\nId do usuário: ' + data[index]['usu_id'].toString()),
+                                titleTextStyle: TextStyle(
+                                    fontSize: 18, color: Colors.black),
+                              );
+                            } else if (chooseCategory == 'Alimentos') {
+                              return ListTile(
+                                title: Text(data[index]['nome']),
+                                subtitle: Text(data[index]['categoria']),
+                                titleTextStyle: TextStyle(
+                                    fontSize: 18, color: Colors.black),
+                              );
+                            }
                           },
                         );
                       }),

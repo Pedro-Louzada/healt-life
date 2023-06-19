@@ -1,16 +1,21 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:nutricao_app/models/models.dart';
 import 'package:nutricao_app/pages/principal_Page.dart';
 import 'package:nutricao_app/database/dbController.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:nutricao_app/database/dbController.dart';
+import 'package:custom_radio_group_list/custom_radio_group_list.dart';
 
 List<String> tipo = ['Bebida', 'Proteína', 'Carboidrato', 'Fruta', 'Grão'];
 
 List<String> categoria = ['Café', 'Almoço', 'Janta'];
 
-List<Object> selections = [];
+List<String> selections = [];
+String select = '';
+int idUser = 0;
+int count = 1;
 
 class AddMenu extends StatefulWidget {
   const AddMenu({super.key});
@@ -119,7 +124,7 @@ class _AddMenuState extends State<AddMenu> {
                 SizedBox(
                   height: 20,
                 ),
-                Text(chooseUser, style: TextStyle(fontSize: 18)),
+                Text('Usuário > ' + chooseUser, style: TextStyle(fontSize: 18)),
                 SizedBox(
                   height: 20,
                 ),
@@ -173,11 +178,17 @@ class _AddMenuState extends State<AddMenu> {
                                               height: 20,
                                             ),
                                             Radio(
-                                                value: data[index],
-                                                groupValue: selections,
-                                                onChanged: (value) {
-                                                  setState(() {});
-                                                }),
+                                              activeColor: Color.fromRGBO(
+                                                  170, 134, 84, 0.824),
+                                              value: data[index]['nome'],
+                                              groupValue: select,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  select = value!;
+                                                  idUser = data[index]['id'];
+                                                });
+                                              },
+                                            )
                                           ],
                                         ),
                                       )
@@ -193,14 +204,24 @@ class _AddMenuState extends State<AddMenu> {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    //Database.insertCardapio();
+                    if (chooseUser.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content:
+                                Text('É necessário selecionar um usuário')),
+                      );
+                    } else {
+                      Database.insertCardapio(
+                          idUser, 'Cardapio $count', select, sqlCategory);
+                      count++;
 
-                    setState(() {});
-
-                    ScaffoldMessenger.of(context).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                           content: Text('Cardapio criado com sucesso!')),
                     );
+                    }
+
+                    
                   },
                   style: ButtonStyle(
                       backgroundColor: MaterialStateColor.resolveWith((states) {
